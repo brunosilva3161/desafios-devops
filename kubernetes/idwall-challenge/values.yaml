@@ -1,0 +1,11 @@
+deployment:
+  version: 1.0.0
+  
+replicas: 3
+
+service:
+  port: 80
+
+node_app:
+  name: "Bruno Silva"
+  address: "prod-idwall.challenge.k8s"
