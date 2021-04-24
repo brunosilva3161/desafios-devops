@@ -1,0 +1,60 @@
+---
+- name: Install Apache with Docker
+  hosts: all
+  collections:
+    - community.docker
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Installs GPG key requirements
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - "gnupg"
+        - "apt-transport-https"
+
+    - name: Adding Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+        state: present
+
+    - name: Adding Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable"
+        state: present
+        filename: docker
+
+    - name: Installs Docker
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - "docker-ce"
+        - "docker-ce-cli"
+        - "containerd.io"
+
+    - name: Installs pip module requirements
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - "python3-pip"
+        - "virtualenv"
+        - "python3-setuptools"
+
+    - name: Install Docker pip module
+      pip:
+        name: docker
+
+    - name: Create Apache container
+      community.docker.docker_container:
+        name: apache
+        image: httpd:2.4
+        published_ports: 80:80
+        container_default_behavior: no_defaults
