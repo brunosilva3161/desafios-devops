@@ -15,8 +15,8 @@ Segue abaixo os pré-requisitos desta solução:
 Para criar a instância EC2 na AWS do tipo t2.micro primeiramente você deve exportar como variável de ambiente as seguintes credenciais de acesso programático na AWS (utilizar o usuário de sua preferência e que tenham permissão de gerenciar o EC2):
 
 ```
-export AWS_ACCESS_KEY_ID="VALUE"
-export AWS_SECRET_ACCESS_KEY="VALUE"
+export AWS_ACCESS_KEY_ID="VALOR"
+export AWS_SECRET_ACCESS_KEY="VALOR"
 ```
 
 Com as credenciais exportadas, o terraform terá acesso para poder criar a instância na AWS.
@@ -44,9 +44,7 @@ Atualmente a AMI do debian 10 (Buster) utilizada no código do terraform só ir�
 
 ```
 [...]
-resource "aws_instance" "idwall_challenge" {
-[...]
-  ami                         = "ami-0adb6517915458bdb" # Debian 10 (Buster) AMI - Only works in us-east-1 region.
+  ami = "ami-0adb6517915458bdb" # Debian 10 (Buster) AMI - Only works in us-east-1 region.
 [...]
 ```
 
@@ -60,7 +58,7 @@ all:
     ansible_user: admin
   hosts:
     idwall-challenge:
-      ansible_host: {{ INFORMAR O IP PÚBLICO AQUI }}
+      ansible_host: IP_PÚBLICO_DA_INSTÂNCIA
 ```
 
 Após isso basta executar o comando abaixo e o servidor Apache estará acessível pela porta 80 do endereço IP público da instância AWS, conforme solicitado no desafio.
@@ -71,14 +69,14 @@ ansible-playbook --private-key ~/idwall-challenge -i hosts.yml playbooks/apache.
 
 ## Endereços de referência:
 
-* [AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-* [Install Docker Engine on Debian](https://docs.docker.com/engine/install/debian/#set-up-the-repository)
-* [community.docker.docker_container – manage docker containers](https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#ansible-collections-community-docker-docker-container-module)
+* [AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
+* [Install Docker Engine on Debian](https://docs.docker.com/engine/install/debian/#set-up-the-repository).
+* [community.docker.docker_container – manage docker containers](https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#ansible-collections-community-docker-docker-container-module).
 
 # Processo de resolução do desafio
 
 Segue abaixo o meu processo de resolução deste desafio:
 
 * Como já havia trabalhado antes com o ansible e o terraform me baseei em códigos que já havia desenvolvido, adaptando-os para os requisitos deste desafio.
-* Quando as execuções do código que eu havia desenvolvido falharam, eu buscava compreender claramente o motivo do erro consultando o traceback, e aplicava uma solução (encontrada em documentações, pesquisas do Google ou pelo meu próprio conhecimento teórico e/ou prático).
-* Buscava adequar o código de modo a torná-lo o mais simples possível, legível e ao mesmo tempo contemplando boas práticas para o ambiente de produção, como por exemplo não executar o ansible utilizando o usuário root mas sim o método `become`.
+* Quando as execuções do código que eu havia desenvolvido falhavam, eu buscava compreender claramente o causa raiz do problema (evitando "achismos") e em seguida aplicava uma solução (encontrada em documentações, pesquisas no Google ou pelo meu próprio conhecimento teórico e/ou prático).
+* Busquei adequar o código de modo a torná-lo mais simples, legível e de acordo com o style guide e as melhores práticas sugeridas na documentação do ansible e terraform. Também procurei contemplar boas práticas para o ambiente de produção, como por exemplo executar o ansible utilizando o usuário `admin`(padrão da AMI do Debian na AWS) ao invés do `root`.
