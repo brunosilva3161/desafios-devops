@@ -45,35 +45,40 @@ Atualmente a AMI do debian 10 (Buster) utilizada no código do terraform só ir�
 ```
 [...]
 resource "aws_instance" "idwall_challenge" {
-  associate_public_ip_address = true
+[...]
   ami                         = "ami-0adb6517915458bdb" # Debian 10 (Buster) AMI - Only works in us-east-1 region.
-  key_name                    = aws_key_pair.idwall_challenge_key.key_name
 [...]
 ```
 
-
 ## Instalando o Docker e o Apache (httpd) em container com o ansible
 
-## Descrição das variáveis passadas via linha de comando
-
-
-```
-export AWS_ACCESS_KEY_ID="VALUE"
-export AWS_SECRET_ACCESS_KEY="VALUE"
-terraform init
-terraform plan
-terraform apply
-```
+Para implementar um container com Apache (httpd) no Docker do servidor provisionado na AWS com o terraform, basta inserir o endereço IP público do servidor (informado no final da execução do terraform) no valor da variável `ansible_host` no arquivo `terraform/ansible/hosts.yml` deste repositório.
 
 ```
+all:
+  vars:
+    ansible_user: admin
+  hosts:
+    idwall-challenge:
+      ansible_host: {{ INFORMAR O IP PÚBLICO AQUI }}
+```
 
+Após isso basta executar o comando abaixo e o servidor Apache estará acessível pela porta 80 do endereço IP público da instância AWS, conforme solicitado no desafio.
 
+```
 ansible-playbook --private-key ~/idwall-challenge -i hosts.yml playbooks/apache.yml
 ```
 
 ## Endereços de referência:
 
+* [AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
 * [Install Docker Engine on Debian](https://docs.docker.com/engine/install/debian/#set-up-the-repository)
 * [community.docker.docker_container – manage docker containers](https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#ansible-collections-community-docker-docker-container-module)
 
 # Processo de resolução do desafio
+
+Segue abaixo o meu processo de resolução deste desafio:
+
+* Como já havia trabalhado antes com o ansible e o terraform me baseei em códigos que já havia desenvolvido, adaptando-os para os requisitos deste desafio.
+* Quando as execuções do código que eu havia desenvolvido falharam, eu buscava compreender claramente o motivo do erro consultando o traceback, e aplicava uma solução (encontrada em documentações, pesquisas do Google ou pelo meu próprio conhecimento teórico e/ou prático).
+* Buscava adequar o código de modo a torná-lo o mais simples possível, legível e ao mesmo tempo contemplando boas práticas para o ambiente de produção, como por exemplo não executar o ansible utilizando o usuário root mas sim o método `become`.

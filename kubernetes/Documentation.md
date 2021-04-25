@@ -59,6 +59,11 @@ Abaixo segue uma explicação do uso de cada uma das variáveis utilizadas nesse
 * `node_app.name`ou `CANDIDATE_NAME`: Nome do candidato que será exibido pela aplicação node deste desafio ao acessar o endereço descrito na variável `node_app.address` através da porta descrita na variável `service.port`.
 * `node_app.address` ou `HTTP_ADDRESS`: Endereço de acesso web que será utilizado no balanceador de carga do Kubernetes (ingress). Caso você não deseje ou não possa criar o nome DNS em um servidor, poderá configurá-lo no arquivo `/etc/hosts` do seu computador, no caso de sistemas operacionais MacOS ou GNU/Linux)
 
+Abaixo segue uma explicação dos demais parâmetros e valores utilizados nos comandos do Helm: 
+* `--create-namespace`: Esse parâmetro foi utilizado para garantir que caso o namespace desejado não existe, o Helm o provisione.
+* `prod-challenge`: Nome do deployment do Helm/Kubernetes.
+* `./idwall-challenge`: Diretório contendo o código utilizado pelo Helm.
+
 ## Endereços de referência:
 
 * [Using Helm](https://helm.sh/docs/intro/using_helm/)
